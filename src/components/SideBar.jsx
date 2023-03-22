@@ -14,9 +14,19 @@ import {
 	PeopleAlt,
 	Create,
 } from '@mui/icons-material';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection } from 'firebase/firestore';
+import { db } from '../firebase';
+
 import SideBarOption from './SideBarOption';
 
 const SideBar = () => {
+	const [channels, loading, error] = useCollection(collection(db, 'rooms'), {
+		snapshotListenOptions: {
+			includeMetadataChanges: true,
+		},
+	});
+
 	return (
 		<SideBarWrapper>
 			<SideBarHeader>
@@ -41,6 +51,10 @@ const SideBar = () => {
 			<SideBarOption Icon={ExpandMore} title="Channels" />
 			<hr />
 			<SideBarOption Icon={Add} addChannelOption title="Add Channel" />
+
+			{channels?.docs.map((doc) => (
+				<SideBarOption key={doc.id} id={doc.id} title={doc.data().name} />
+			))}
 		</SideBarWrapper>
 	);
 };
@@ -66,7 +80,7 @@ const SideBarHeader = styled.div`
 	border-bottom: 1px solid #49274b;
 	padding-bottom: 10px;
 	padding: 13px;
-  align-items: center;
+	align-items: center;
 
 	> .MuiSvgIcon-root {
 		padding: 8px;
