@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useDispatch } from 'react-redux';
+import { enterRoom } from '../features/appSlice';
 
 const SideBarOption = ({ Icon, title, addChannelOption, id }) => {
+	const dispatch = useDispatch();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [channelName, setChannelName] = useState('');
 
@@ -29,7 +28,15 @@ const SideBarOption = ({ Icon, title, addChannelOption, id }) => {
 			});
 		}
 	};
-	const selectChannelHandler = async () => {};
+	const selectChannelHandler = async () => {
+		if (id) {
+			dispatch(
+				enterRoom({
+					roomId: id,
+				})
+			);
+		}
+	};
 
 	return (
 		<>
