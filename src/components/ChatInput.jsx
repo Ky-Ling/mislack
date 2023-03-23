@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { db } from '../firebase';
@@ -10,16 +10,18 @@ const ChatInput = ({ channelId, channelName, chatRef }) => {
 	const handleMessageSend = (e) => {
 		e.preventDefault();
 
-		if (!channelId) return;
-		const roomDocRef = doc(db, 'rooms', channelId);
-		const messagesCollectionRef = collection(roomDocRef, 'messages');
+		if (!channelId) {
+			return;
+		}
 
-		addDoc(messagesCollectionRef, {
+		const roomDocRef = doc(db, 'rooms', channelId);
+
+		const messageCollectionRef = collection(roomDocRef, 'messages');
+		addDoc(messageCollectionRef, {
 			message: input,
-			timestamp: serverTimestamp,
-			user: 'Torrid',
-			userImage:
-				'https://lh3.googleusercontent.com/a/AGNmyxZNs7HQmu5oNwI4ltirWc1v8Q7weLbgcPDDywT6=s360',
+			timestamp: serverTimestamp(),
+			user: user?.displayName,
+			userImage: user?.photoURL,
 		});
 
 		chatRef?.current?.scrollIntoView({
@@ -34,7 +36,7 @@ const ChatInput = ({ channelId, channelName, chatRef }) => {
 			<form>
 				<input
 					value={input}
-					placeholder={`Message #${channelName}`}
+					placeholder={`Message # ${channelName}`}
 					onChange={(e) => setInput(e.target.value)}
 				/>
 				<Button hidden type="submit" onClick={handleMessageSend}>
@@ -49,13 +51,11 @@ export default ChatInput;
 
 const ChatInputWrapper = styled.div`
 	border-radius: 20px;
-
 	> form {
 		position: relative;
 		display: flex;
-		align-items: center;
+		justify-content: center;
 	}
-
 	> form > input {
 		position: fixed;
 		bottom: 30px;
@@ -65,7 +65,6 @@ const ChatInputWrapper = styled.div`
 		padding: 20px;
 		outline: none;
 	}
-
 	> form > button {
 		display: none !important;
 	}

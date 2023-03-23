@@ -22,7 +22,6 @@ const SideBarOption = ({ Icon, title, addChannelOption, id }) => {
 	const handleSubmit = async (event) => {
 		if (event.key === 'Enter') {
 			handleModalClose();
-			console.log(channelName);
 			await addDoc(collection(db, 'rooms'), {
 				name: channelName,
 			});

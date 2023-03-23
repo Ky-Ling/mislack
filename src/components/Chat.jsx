@@ -2,7 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { InfoOutlined, StarBorderOutlined } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useCollectionData, useDocumentData } from 'react-firebase-hooks';
+import {
+	useCollectionData,
+	useDocumentData,
+} from 'react-firebase-hooks/firestore';
 import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { selectedRoomId } from '../features/appSlice';
@@ -28,7 +31,7 @@ const Chat = () => {
 	const [roomMessages, loading] = useCollectionData(messageQuery);
 
 	useEffect(() => {
-		chatRef.current.scrollIntoView({
+		chatRef?.current?.scrollIntoView({
 			behavior: 'smooth',
 		});
 	}, [roomId, loading]);
@@ -52,7 +55,7 @@ const Chat = () => {
 					</Header>
 
 					<ChatMessages>
-						{roomMessages?.docs.map((doc) => {
+						{roomMessages?.docs?.map((doc) => {
 							const { message, timestamp, user, userImage } = doc;
 							return (
 								<Message
@@ -66,13 +69,13 @@ const Chat = () => {
 						})}
 						<ChatBottom ref={chatRef} />
 					</ChatMessages>
+					<ChatInput
+						chatRef={chatRef}
+						channelId={roomId}
+						channelName={roomDetails?.name}
+					/>
 				</>
 			)}
-			<ChatInput
-				chatRef={chatRef}
-				channelId={roomId}
-				channelName={roomDetails?.name}
-			/>
 		</ChatWrapper>
 	);
 };
