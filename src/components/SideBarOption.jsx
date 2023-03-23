@@ -65,6 +65,7 @@ const SideBarOption = ({ Icon, title, addChannelOption, id }) => {
 				</DialogTitle>
 				<DialogContent>
 					<TextField
+						size="small"
 						value={channelName}
 						onKeyDown={handleSubmit}
 						onChange={(e) => setChannelName(e.target.value)}
