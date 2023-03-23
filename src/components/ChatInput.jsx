@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import { db } from '../firebase';
 import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore';
 
-const ChatInput = ({ channelId, channelName }) => {
+const ChatInput = ({ channelId, channelName, chatRef }) => {
 	const [input, setInput] = useState('');
 
 	const handleMessageSend = (e) => {
@@ -20,6 +20,10 @@ const ChatInput = ({ channelId, channelName }) => {
 			user: 'Torrid',
 			userImage:
 				'https://lh3.googleusercontent.com/a/AGNmyxZNs7HQmu5oNwI4ltirWc1v8Q7weLbgcPDDywT6=s360',
+		});
+
+		chatRef?.current?.scrollIntoView({
+			behavior: 'smooth',
 		});
 
 		setInput('');

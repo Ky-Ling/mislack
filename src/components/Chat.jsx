@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { InfoOutlined, StarBorderOutlined } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
@@ -10,7 +10,10 @@ import ChatInput from './ChatInput';
 import Message from './Message';
 
 const Chat = () => {
+	const chatRef = useRef(null);
+
 	const roomId = useSelector(selectedRoomId);
+
 	let roomDocRef;
 	let roomMessagesRef;
 	let messageQuery;
@@ -22,38 +25,54 @@ const Chat = () => {
 	}
 
 	const [roomDetails] = useDocumentData(roomDocRef);
-	const [roomMessages] = useCollectionData(messageQuery);
+	const [roomMessages, loading] = useCollectionData(messageQuery);
+
+	useEffect(() => {
+		chatRef.current.scrollIntoView({
+			behavior: 'smooth',
+		});
+	}, [roomId, loading]);
 
 	return (
 		<ChatWrapper>
-			<Header>
-				<HeaderLeft>
-					<h4>
-						<strong># {roomDetails?.name}</strong>
-					</h4>
-					<StarBorderOutlined />
-				</HeaderLeft>
-				<HeaderRight>
-					<p>
-						<InfoOutlined /> Details
-					</p>
-				</HeaderRight>
-			</Header>
-			<ChatMessages>
-				{roomMessages?.docs.map((doc) => {
-					const { message, timestamp, user, userImage } = doc;
-					return (
-						<Message
-							key={doc.id}
-							message={message}
-							timestamp={timestamp}
-							user={user}
-							userImage={userImage}
-						/>
-					);
-				})}
-			</ChatMessages>
-			<ChatInput channelId={roomId} channelName={roomDetails?.name} />
+			{roomDetails && roomMessages && (
+				<>
+					<Header>
+						<HeaderLeft>
+							<h4>
+								<strong># {roomDetails?.name}</strong>
+							</h4>
+							<StarBorderOutlined />
+						</HeaderLeft>
+						<HeaderRight>
+							<p>
+								<InfoOutlined /> Details
+							</p>
+						</HeaderRight>
+					</Header>
+
+					<ChatMessages>
+						{roomMessages?.docs.map((doc) => {
+							const { message, timestamp, user, userImage } = doc;
+							return (
+								<Message
+									key={doc.id}
+									message={message}
+									timestamp={timestamp}
+									user={user}
+									userImage={userImage}
+								/>
+							);
+						})}
+						<ChatBottom ref={chatRef} />
+					</ChatMessages>
+				</>
+			)}
+			<ChatInput
+				chatRef={chatRef}
+				channelId={roomId}
+				channelName={roomDetails?.name}
+			/>
 		</ChatWrapper>
 	);
 };
@@ -100,3 +119,7 @@ const HeaderRight = styled.div`
 	}
 `;
 const ChatMessages = styled.div``;
+
+const ChatBottom = styled.div`
+	padding-bottom: 200px;
+`;
