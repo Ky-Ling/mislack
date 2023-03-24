@@ -4,12 +4,21 @@ import { Avatar } from '@mui/material';
 import { AccessTimeOutlined } from '@mui/icons-material';
 import { Search } from '@mui/icons-material';
 import { HelpOutline } from '@mui/icons-material';
+import { auth } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { signOut } from 'firebase/auth';
 
 const Header = () => {
+	const [user] = useAuthState(auth);
 	return (
 		<HeaderWrapper>
 			<HeaderLeft>
-				<HeaderAvatar />
+				<HeaderAvatar
+					src={user?.photoURL}
+					alt={user?.displayName}
+					onClick={() => signOut(auth)}
+				/>
+
 				<AccessTimeOutlined />
 			</HeaderLeft>
 			<HeaderSearch>

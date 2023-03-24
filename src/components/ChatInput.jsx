@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore';
 
 const ChatInput = ({ channelId, channelName, chatRef }) => {
 	const [input, setInput] = useState('');
+  const [user] = useAuthState(auth)
 
 	const handleMessageSend = (e) => {
 		e.preventDefault();

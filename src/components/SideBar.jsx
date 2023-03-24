@@ -16,12 +16,15 @@ import {
 } from '@mui/icons-material';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import SideBarOption from './SideBarOption';
 
 const SideBar = () => {
-	const [channels, loading, error] = useCollection(collection(db, 'rooms'), {
+	const [user] = useAuthState(auth);
+
+	const [channels] = useCollection(collection(db, 'rooms'), {
 		snapshotListenOptions: {
 			includeMetadataChanges: true,
 		},
@@ -34,7 +37,7 @@ const SideBar = () => {
 					<h2>PAPA FAM HQ</h2>
 					<h3>
 						<FiberManualRecord />
-						Torrid
+						{user?.displayName ?? '--'}
 					</h3>
 				</SideBarInfo>
 				<Create />
